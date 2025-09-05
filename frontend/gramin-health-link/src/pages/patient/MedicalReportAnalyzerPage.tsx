@@ -3,11 +3,11 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
-import { 
-  Upload, 
-  FileText, 
-  Image, 
-  AlertTriangle, 
+import {
+  Upload,
+  FileText,
+  Image,
+  AlertTriangle,
   CheckCircle,
   Clock,
   Brain,
@@ -16,24 +16,11 @@ import {
   TrendingUp,
   Users
 } from 'lucide-react';
+import { toast } from 'sonner';
+import Header from '@/components/Header';
 
 // Correct Gradio client import and file handler
 import { Client, handle_file } from '@gradio/client';
-
-// Mock Header component
-const Header = () => (
-  <header className="fixed top-0 left-0 right-0 bg-white shadow-sm z-50 border-b">
-    <div className="container mx-auto px-4 py-3">
-      <h1 className="text-xl font-semibold text-blue-600">HealthAI</h1>
-    </div>
-  </header>
-);
-
-// Mock toast functionality
-const toast = {
-  success: (message: string) => console.log('Success:', message),
-  error: (message: string) => console.error('Error:', message),
-};
 
 // Enhanced interface for parsed analysis data
 interface ParsedAnalysis {
@@ -172,20 +159,25 @@ const MedicalReportAnalyzerPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+    <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-100">
       <Header />
       
       <div className="container mx-auto px-4 py-8 pt-24 max-w-6xl">
         <div className="space-y-8">
           {/* Header Section */}
           <div className="text-center">
+            <div className="flex justify-center mb-4">
+              <div className="bg-green-100 p-4 rounded-full">
+                <Brain className="h-10 w-10 text-green-600" />
+              </div>
+            </div>
             <h1 className="text-4xl font-bold text-gray-900 mb-2">Medical Report Analyzer</h1>
             <p className="text-lg text-gray-600">AI-powered analysis for better health insights</p>
           </div>
 
           {/* Upload Section */}
           <Card className="shadow-lg">
-            <CardHeader className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-t-lg">
+            <CardHeader className="bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-t-lg">
               <CardTitle className="flex items-center gap-3 text-xl">
                 <Brain className="h-6 w-6" />
                 Upload Medical Report
@@ -225,10 +217,10 @@ const MedicalReportAnalyzerPage: React.FC = () => {
                 )}
               </div>
 
-              <Button 
-                onClick={analyzeReport} 
+              <Button
+                onClick={analyzeReport}
                 disabled={!selectedFile || isAnalyzing}
-                className="w-full mt-6 h-12 text-lg bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700"
+                className="w-full mt-6 h-12 text-lg bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700"
               >
                 {isAnalyzing ? (
                   <>
@@ -248,7 +240,7 @@ const MedicalReportAnalyzerPage: React.FC = () => {
           {/* Results Section */}
           <div className="space-y-6">
             <h2 className="text-3xl font-bold text-gray-900 flex items-center gap-2">
-              <Activity className="h-8 w-8 text-blue-600" />
+              <Activity className="h-8 w-8 text-green-600" />
               Analysis Results
             </h2>
             
@@ -291,10 +283,10 @@ const MedicalReportAnalyzerPage: React.FC = () => {
                     {/* Health Summary */}
                     <div>
                       <h4 className="text-xl font-semibold text-gray-900 mb-3 flex items-center gap-2">
-                        <Heart className="h-5 w-5 text-red-500" />
+                        <Heart className="h-5 w-5 text-green-500" />
                         Health Summary
                       </h4>
-                      <div className="bg-gray-50 p-4 rounded-lg border-l-4 border-blue-500">
+                      <div className="bg-gray-50 p-4 rounded-lg border-l-4 border-green-500">
                         <p className="text-gray-800 leading-relaxed">{result.analysis}</p>
                       </div>
                     </div>
@@ -303,7 +295,7 @@ const MedicalReportAnalyzerPage: React.FC = () => {
                     {result.parsedData?.important_parameters && (
                       <div>
                         <h4 className="text-xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                          <TrendingUp className="h-5 w-5 text-blue-500" />
+                          <TrendingUp className="h-5 w-5 text-green-500" />
                           Test Results
                         </h4>
                         <div className="grid gap-6">
@@ -357,11 +349,11 @@ const MedicalReportAnalyzerPage: React.FC = () => {
                       {result.parsedData?.recommendations && (
                         <div>
                           <h4 className="text-lg font-semibold text-gray-900 mb-3 flex items-center gap-2">
-                            <Users className="h-5 w-5 text-blue-500" />
+                            <Users className="h-5 w-5 text-green-500" />
                             Medical Recommendations
                           </h4>
-                          <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
-                            <p className="text-blue-800">{result.parsedData.recommendations}</p>
+                          <div className="bg-green-50 p-4 rounded-lg border border-green-200">
+                            <p className="text-green-800">{result.parsedData.recommendations}</p>
                           </div>
                         </div>
                       )}
@@ -381,7 +373,7 @@ const MedicalReportAnalyzerPage: React.FC = () => {
 
                     {/* Motivational Message */}
                     {result.parsedData?.motivational_closing && (
-                      <div className="bg-gradient-to-r from-purple-50 to-pink-50 p-6 rounded-lg border border-purple-200">
+                      <div className="bg-gradient-to-r from-green-50 to-emerald-50 p-6 rounded-lg border border-green-200">
                         <h4 className="text-lg font-semibold text-gray-900 mb-2">💪 Stay Positive</h4>
                         <p className="text-gray-800 italic">{result.parsedData.motivational_closing}</p>
                       </div>
