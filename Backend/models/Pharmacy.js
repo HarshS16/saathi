@@ -1,33 +1,66 @@
-import mongoose from 'mongoose';
+const mongoose = require('mongoose');
 
 const pharmacySchema = new mongoose.Schema({
-    name: {
-        type: String,
-        required: [true, 'Please provide the pharmacy name'],
-    },
+  name: {
+    type: String,
+    required: true,
+    trim: true
+  },
+  owner: {
+    type: String,
+    required: true
+  },
+  license: {
+    type: String,
+    required: true,
+    unique: true
+  },
+  location: {
     address: {
-        type: String,
-        required: [true, 'Please provide the pharmacy address'],
+      type: String,
+      required: true
     },
-    pharmacist: {
-        type: mongoose.Schema.ObjectId,
-        ref: 'User',
-        required: [true, 'A pharmacy must belong to a pharmacist'],
+    city: {
+      type: String,
+      required: true
     },
-    inventory: {
-        type: Map,
-        of: Boolean,
-        default: {},
+    state: {
+      type: String,
+      required: true
     },
-    // New field to store prescriptions sent to this pharmacy
-    prescriptionQueue: [{
-        type: mongoose.Schema.ObjectId,
-        ref: 'Prescription',
-    }],
-}, {
-    timestamps: true,
+    pincode: {
+      type: String,
+      required: true
+    }
+  },
+  contact: {
+    phone: {
+      type: String,
+      required: true
+    },
+    email: {
+      type: String,
+      required: true
+    }
+  },
+  operatingHours: {
+    open: {
+      type: String,
+      required: true
+    },
+    close: {
+      type: String,
+      required: true
+    }
+  },
+  isActive: {
+    type: Boolean,
+    default: true
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now
+  }
 });
 
-const Pharmacy = mongoose.model('Pharmacy', pharmacySchema);
-
-export default Pharmacy;
+module.exports = mongoose.model('Pharmacy', pharmacySchema);

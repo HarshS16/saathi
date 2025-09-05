@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import ProtectedRoute from "@/components/ProtectedRoute";
+import DemoNavigation from "@/components/DemoNavigation";
 import LandingPage from "./pages/public/LandingPage";
 import LoginPage from "./pages/public/LoginPage";
 import OtpVerificationPage from "./pages/public/OtpVerificationPage";
@@ -16,6 +17,15 @@ import AppointmentsHistoryPage from "./pages/patient/AppointmentsHistoryPage";
 import PatientProfilePage from "./pages/patient/PatientProfilePage";
 import DoctorDashboardPage from "./pages/doctor/DoctorDashboardPage";
 import DoctorSchedulePage from "./pages/doctor/DoctorSchedulePage";
+import SymptomaticAnalysisPage from "./pages/patient/SymptomaticAnalysisPage";
+import DoctorConsultationPage from "./pages/doctor/DoctorConsultationPage";
+import InventoryManagementPage from "./pages/pharmacy/InventoryManagementPage";
+import MedicineApprovalRequestPage from "./pages/patient/MedicineApprovalRequestPage";
+import MedicineApprovalDashboard from "./pages/doctor/MedicineApprovalDashboard";
+import VitalsMetricsPage from "./pages/patient/VitalsMetricsPage";
+import DailyMedsPage from "./pages/patient/DailyMedsPage";
+import MedicalReportAnalyzerPage from "./pages/patient/MedicalReportAnalyzerPage";
+import MedsAvailabilityPage from "./pages/patient/MedsAvailabilityPage";
 import NotFound from "./pages/NotFound";
 import "./lib/i18n";
 
@@ -44,25 +54,37 @@ const App = () => {
           <BrowserRouter>
             <Toaster />
             <Sonner />
-
+            <DemoNavigation />
+            
             <Routes>
-              {/* Public Routes */}
-              <Route path="/" element={isAuthenticated && user ? <Navigate to={user.role === 'doctor' ? '/doctor/dashboard' : '/patient/dashboard'} replace /> : <LandingPage />} />
-              <Route path="/login" element={isAuthenticated && user ? <Navigate to={user.role === 'doctor' ? '/doctor/dashboard' : '/patient/dashboard'} replace /> : <LoginPage />} />
-              <Route path="/otp-verification" element={isAuthenticated && user ? <Navigate to={user.role === 'doctor' ? '/doctor/dashboard' : '/patient/dashboard'} replace /> : <OtpVerificationPage />} />
+              {/* Public Routes - DEMO MODE: No redirects */}
+              <Route path="/" element={<LandingPage />} />
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/otp-verification" element={<OtpVerificationPage />} />
               <Route path="/auth/callback" element={<GoogleAuthCallback />} />
-
+              
               {/* Protected Patient Routes */}
               <Route path="/patient/dashboard" element={<ProtectedRoute allowedRoles={['patient']}><PatientDashboardPage /></ProtectedRoute>} />
               <Route path="/patient/find-doctor" element={<ProtectedRoute allowedRoles={['patient']}><FindDoctorPage /></ProtectedRoute>} />
               <Route path="/patient/book-appointment" element={<ProtectedRoute allowedRoles={['patient']}><BookAppointmentPage /></ProtectedRoute>} />
               <Route path="/patient/appointments" element={<ProtectedRoute allowedRoles={['patient']}><AppointmentsHistoryPage /></ProtectedRoute>} />
               <Route path="/patient/profile" element={<ProtectedRoute allowedRoles={['patient']}><PatientProfilePage /></ProtectedRoute>} />
-
-              {/* Protected Doctor Routes */}
-              <Route path="/doctor/dashboard" element={<ProtectedRoute allowedRoles={['doctor']}><DoctorDashboardPage /></ProtectedRoute>} />
-              <Route path="/doctor/schedule" element={<ProtectedRoute allowedRoles={['doctor']}><DoctorSchedulePage /></ProtectedRoute>} />
-
+              <Route path="/patient/symptomatic-analysis" element={<ProtectedRoute allowedRoles={['patient']}><SymptomaticAnalysisPage /></ProtectedRoute>} />
+              <Route path="/patient/medicine-approval" element={<MedicineApprovalRequestPage />} />
+              <Route path="/patient/vitals" element={<VitalsMetricsPage />} />
+              <Route path="/patient/daily-meds" element={<DailyMedsPage />} />
+              <Route path="/patient/report-analyzer" element={<MedicalReportAnalyzerPage />} />
+              <Route path="/patient/meds-availability" element={<MedsAvailabilityPage />} />
+              
+              {/* Doctor Routes - DEMO MODE: No protection */}
+              <Route path="/doctor/dashboard" element={<DoctorDashboardPage />} />
+              <Route path="/doctor/schedule" element={<DoctorSchedulePage />} />
+              <Route path="/doctor/consultation" element={<DoctorConsultationPage />} />
+              <Route path="/doctor/medicine-approval" element={<MedicineApprovalDashboard />} />
+              
+              {/* Pharmacy Routes - DEMO MODE: No protection */}
+              <Route path="/pharmacy/inventory" element={<InventoryManagementPage />} />
+              
               {/* Fallback */}
               <Route path="*" element={<NotFound />} />
             </Routes>

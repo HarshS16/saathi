@@ -14,6 +14,7 @@ import appointmentRoutes from './routes/appointments.js';
 import prescriptionRoutes from './routes/prescription.js';
 import pharmacyRoutes from "./routes/pharmacyRoutes.js";
 import healthRecordRoutes from "./routes/healthRecordRoutes.js";
+import healthAnalysisRoutes from "./routes/healthAnalysis.js";
 import {scheduleAppointmentAlerts} from "./controllers/alertController.js";
 
 // Initialize Express app
@@ -24,11 +25,12 @@ connectDB();
 
 // Middleware setup
 app.use(cors({
-    origin: process.env.FRONTEND_URL || 'http://localhost:3000',
-    credentials: true
+    origin: ['http://localhost:8080', 'http://localhost:3000', 'http://localhost:5173'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
 }));
 app.use(express.json());
-
+app.options('*', cors());
 // Session configuration for Passport
 app.use(session({
     secret: process.env.SESSION_SECRET || 'your-secret-key',
@@ -59,6 +61,7 @@ app.use('/api/v1/appointments', appointmentRoutes);
 app.use('/api/v1/prescriptions', prescriptionRoutes);
 app.use('/api/v1/pharmacies', pharmacyRoutes);
 app.use('/api/v1/healthrecords', healthRecordRoutes);
+app.use('/api/v1/health', healthAnalysisRoutes);
 
 
 // Define the port and start the server

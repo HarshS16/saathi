@@ -1,16 +1,25 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '@/hooks/useAuth';
 import { Button } from '@/components/ui/button';
 import {
-  Heart, 
-  Menu, 
-  X, 
-  Phone, 
+  Heart,
+  Menu,
+  X,
+  Phone,
   Stethoscope,
   Users,
-  Calendar
+  Calendar,
+  Languages,
+  Video
 } from 'lucide-react';
+
+declare global {
+  interface Window {
+    google: any;
+  }
+}
 
 interface HeaderProps {
   transparent?: boolean;
@@ -19,7 +28,24 @@ interface HeaderProps {
 export function Header({ transparent = false }: HeaderProps) {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [showTranslate, setShowTranslate] = useState(false);
+
+  useEffect(() => {
+    // Check if Google Translate is already loaded
+    if (window.google && window.google.translate) {
+      new window.google.translate.TranslateElement(
+        {
+          pageLanguage: 'en',
+          includedLanguages: 'en,hi,ta,te,mr,gu,pa,ur,bn,ml',
+          layout: window.google.translate.TranslateElement.InlineLayout.SIMPLE,
+          autoDisplay: false
+        },
+        'google_translate_element'
+      );
+    }
+  }, []);
 
   const navItems = [
     { label: t('services'), href: '#services', icon: Stethoscope },
@@ -90,6 +116,30 @@ export function Header({ transparent = false }: HeaderProps) {
               <Calendar className="mr-2 h-4 w-4" />
               {t('bookAppointment')}
             </Button>
+            
+            {/* Doctor Consultation Button */}
+            <Button
+              variant="ghost"
+              onClick={() => navigate('/doctor/consultation')}
+              className="text-primary hover:bg-primary/10"
+            >
+              <Video className="h-4 w-4" />
+            </Button>
+            
+            <div id="google_translate_element" className="hidden"></div>
+            <Button
+              variant="ghost"
+              onClick={() => {
+                const element = document.getElementById('google_translate_element');
+                if (element) {
+                  element.classList.toggle('hidden');
+                  setShowTranslate(!showTranslate);
+                }
+              }}
+              className="text-primary hover:bg-primary/10"
+            >
+              <Languages className="h-4 w-4" />
+            </Button>
           </div>
 
           {/* Mobile Menu Button */}
@@ -141,6 +191,39 @@ export function Header({ transparent = false }: HeaderProps) {
                   <Calendar className="mr-2 h-4 w-4" />
                   {t('bookAppointment')}
                 </Button>
+                
+                {/* Doctor Consultation Link */}
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    navigate('/doctor/consultation');
+                    setIsMenuOpen(false);
+                  }}
+                  className="w-full"
+                >
+                  <Video className="mr-2 h-4 w-4" />
+                  Consultation
+                </Button>
+                
+                <div id="google_translate_element_mobile" className="hidden"></div>
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    const element = document.getElementById('google_translate_element_mobile');
+                    if (element) {
+                      element.classList.toggle('hidden');
+                      // Copy the content from the main translate element
+                      const mainElement = document.getElementById('google_translate_element');
+                      if (mainElement) {
+                        element.innerHTML = mainElement.innerHTML;
+                      }
+                    }
+                  }}
+                  className="w-full"
+                >
+                  <Languages className="mr-2 h-4 w-4" />
+                  {t('translate')}
+                </Button>
               </div>
             </nav>
           </div>
@@ -149,3 +232,5 @@ export function Header({ transparent = false }: HeaderProps) {
     </header>
   );
 }
+
+export default Header;

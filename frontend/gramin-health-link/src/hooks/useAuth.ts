@@ -1,81 +1,87 @@
+// @/hooks/useAuth.ts
 
-// import { useState, useEffect, useCallback } from 'react';
-// import { jwtDecode } from 'jwt-decode';
+// DEMO MODE: This file is modified to bypass authentication for development.
+// The original file content is commented out below.
 
-// interface User {
-//   id: string;
-//   phone: string;
-//   name?: string;
-//   role: 'patient' | 'doctor' | 'pharmacist';
-// }
+import { useCallback } from 'react';
 
-// export function useAuth() {
-//   const [user, setUser] = useState<User | null>(null);
-//   const [isAuthenticated, setIsAuthenticated] = useState(false);
-//   const [isLoading, setIsLoading] = useState(true);
+interface User {
+  id: string;
+  phone: string;
+  name?: string;
+  email?: string;
+  role: 'patient' | 'doctor' | 'pharmacist';
+  avatar?: string;
+}
 
-//   const logout = useCallback(() => {
-//     setUser(null);
-//     setIsAuthenticated(false);
-//     localStorage.removeItem('sehat-saathi-token');
-//   }, []);
+// --- Hardcoded User Data ---
+// Choose a user role to simulate by uncommenting one of the following blocks.
+// You can customize the details as needed.
 
-//   const decodeAndSetUser = useCallback((token: string) => {
-//     try {
-//       const decoded: User = jwtDecode(token);
-//       setUser(decoded);
-//       setIsAuthenticated(true);
-//       return decoded;
-//     } catch (error) {
-//       console.error('Error decoding token:', error);
-//       // Clear invalid token and reset state
-//       localStorage.removeItem('sehat-saathi-token');
-//       setUser(null);
-//       setIsAuthenticated(false);
-//       return null;
-//     }
-//   }, []);
+// --- PATIENT (COMMENTED OUT) ---
+/*
+const demoUser: User = {
+  id: 'patient-123',
+  phone: '9876543210',
+  name: 'Rani Sharma',
+  email: 'rani.sharma@example.com',
+  role: 'patient',
+  avatar: 'https://i.pravatar.cc/150?u=a042581f4e29026704d',
+};
+*/
 
-//   const login = useCallback((token: string) => {
-//     localStorage.setItem('sehat-saathi-token', token);
-//     const decodedUser = decodeAndSetUser(token);
-//     return decodedUser;
-//   }, [decodeAndSetUser]);
+// --- DOCTOR (DEFAULT) ---
+const demoUser: User = {
+  id: 'doctor-456',
+  phone: '9876543211',
+  name: 'Dr. Anil Kumar',
+  email: 'anil.kumar@example.com',
+  role: 'doctor',
+  avatar: 'https://i.pravatar.cc/150?u=a042581f4e29026704e',
+};
 
-//   const getToken = useCallback(() => {
-//     return localStorage.getItem('sehat-saathi-token');
-//   }, []);
+// --- PHARMACIST ---
+/*
+const demoUser: User = {
+  id: 'pharmacist-789',
+  phone: '9876543212',
+  name: 'Sunita Devi',
+  email: 'sunita.devi@example.com',
+  role: 'pharmacist',
+  avatar: 'https://i.pravatar.cc/150?u=a042581f4e29026704f',
+};
+*/
 
-//   useEffect(() => {
-//     const token = localStorage.getItem('sehat-saathi-token');
-//     if (token) {
-//       decodeAndSetUser(token);
-//     } else {
-//       setIsLoading(false);
-//     }
-//   }, [decodeAndSetUser]);
 
-//   // Set loading to false after initial auth check
-//   useEffect(() => {
-//     if (!isLoading) return;
-    
-//     const timer = setTimeout(() => {
-//       setIsLoading(false);
-//     }, 100);
+export function useAuth() {
+  const logout = useCallback(() => {
+    // In demo mode, logout does nothing but log to the console.
+    console.log('Logout function called. In a real app, this would clear user session.');
+  }, []);
 
-//     return () => clearTimeout(timer);
-//   }, [isLoading]);
+  // All other auth functions are mocked and do nothing.
+  const login = useCallback(() => Promise.resolve(null), []);
+  const requestOTP = useCallback(() => Promise.resolve({ success: true }), []);
+  const verifyOTP = useCallback(() => Promise.resolve({ success: true }), []);
+  const loginWithGoogle = useCallback(() => Promise.resolve({ success: true }), []);
 
-//   return {
-//     user,
-//     isAuthenticated,
-//     isLoading,
-//     token: getToken(),
-//     login,
-//     logout,
-//   };
-// }
+  return {
+    user: demoUser,
+    isAuthenticated: true, // Always authenticated in demo mode
+    isLoading: false,      // Never loading in demo mode
+    token: 'fake-jwt-token-for-demo-mode',
+    login,
+    logout,
+    requestOTP,
+    verifyOTP,
+    loginWithGoogle,
+  };
+}
 
+
+/*
+// >>>>> ORIGINAL FILE CONTENT <<<<<
+// The original code is preserved here for easy restoration.
 
 import { useState, useEffect, useCallback } from 'react';
 import { jwtDecode } from 'jwt-decode';
@@ -251,3 +257,4 @@ export function useAuth() {
     loginWithGoogle,
   };
 }
+*/

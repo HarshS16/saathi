@@ -27,77 +27,46 @@ const PatientDashboardPage = () => {
   const API_URL = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
-    const fetchDashboardData = async () => {
-      try {
-        if (!token) {
-          throw new Error('No authentication token available');
-        }
+    // DEMO MODE: Bypassing API calls and using hardcoded data
+    console.log("DEMO MODE: Loading hardcoded dashboard data.");
 
-        const headers = {
-          'Authorization': `Bearer ${token}`,
-        };
+    if (user) {
+      // Use the user from our hardcoded useAuth hook
+      setCurrentUser(user);
 
-        console.log('Fetching dashboard data for user:', user?.id);
-
-        // Fetch user data from the /me endpoint
-        const userRes = await fetch(`${API_URL}/api/v1/users/me`, { headers });
-        const userData = await userRes.json();
-        
-        console.log('User data response:', { status: userRes.status, data: userData });
-        
-        if (!userRes.ok) {
-          if (userRes.status === 401) {
-            // Token expired or invalid
-            logout();
-            navigate('/login');
-            return;
-          }
-          throw new Error(userData.message || 'Failed to fetch user data.');
-        }
-        setCurrentUser(userData);
-
-        // Fetch appointments from a hypothetical endpoint
-        // You'll need to create this endpoint on your backend
-        const appointmentsRes = await fetch(`${API_URL}/api/v1/appointments`, { headers });
-        const appointmentsData = await appointmentsRes.json();
-        
-        console.log('Appointments response:', { status: appointmentsRes.status, data: appointmentsData });
-        
-        if (!appointmentsRes.ok) {
-          if (appointmentsRes.status === 401) {
-            // Token expired or invalid
-            logout();
-            navigate('/login');
-            return;
-          }
-          throw new Error(appointmentsData.message || 'Failed to fetch appointments.');
-        }
-        setAppointments(appointmentsData.appointments || []);
-
-      } catch (err) {
-        console.error("Dashboard API Error:", err);
-        setError(err.message);
-        
-        // If it's an authentication error, redirect to login
-        if (err.message.includes('401') || err.message.includes('token')) {
-          logout();
-          navigate('/login');
-        }
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    // Only fetch data if the user is authenticated and we have a token
-    if (user && token) {
-      fetchDashboardData();
-    } else if (!user) {
-      // User not authenticated, redirect to login
-      navigate('/login');
-    } else {
+      // Hardcode some appointments
+      const demoAppointments = [
+        {
+          _id: 'appt-1',
+          doctor: {
+            name: 'Anil Kumar',
+            specialty: 'Cardiologist',
+          },
+          date: new Date(new Date().setDate(new Date().getDate() + 2)).toISOString(),
+          time: '10:30 AM',
+          status: 'confirmed',
+        },
+        {
+          _id: 'appt-2',
+          doctor: {
+            name: 'Sunita Sharma',
+            specialty: 'Dermatologist',
+          },
+          date: new Date(new Date().setDate(new Date().getDate() + 5)).toISOString(),
+          time: '02:00 PM',
+          status: 'pending',
+        },
+      ];
+      setAppointments(demoAppointments);
+      
       setIsLoading(false);
+      setError(null);
+
+    } else {
+      // This part should not be reached in demo mode, but as a fallback:
+      navigate('/login');
     }
-  }, [user, token, logout, navigate]);
+  }, [user, navigate]);
 
   const quickActions = [
     {

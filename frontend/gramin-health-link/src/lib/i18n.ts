@@ -187,7 +187,8 @@ const englishTranslations = {
     offline: 'Offline',
     connecting: 'Connecting',
     connectionLost: 'Connection Lost',
-    retry: 'Retry'
+    retry: 'Retry',
+    translate: 'Translate'
   }
 };
 

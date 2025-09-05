@@ -19,7 +19,12 @@ import { toast } from 'sonner';
 const BookAppointmentPage = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const doctorId = searchParams.get('doctorId');
+  let doctorId = searchParams.get('doctorId');
+
+  // DEMO MODE: Hardcode doctorId if not present in URL for direct access
+  if (!doctorId) {
+    doctorId = 'doc-1'; // Use a hardcoded doctor ID from your demoDoctors list
+  }
 
   const { data: doctorData, isLoading: doctorLoading, error: doctorError } = useDoctorDetails(doctorId || '');
   const { data: scheduleData } = useDoctorSchedule();

@@ -30,48 +30,40 @@ const DoctorDashboardPage = () => {
   const API_URL = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
-    const fetchAppointments = async () => {
-      try {
-        const today = new Date();
-        const startOfWeek = new Date(today.getFullYear(), today.getMonth(), today.getDate() - today.getDay());
-        const endOfWeek = new Date(today.getFullYear(), today.getMonth(), today.getDate() - today.getDay() + 6);
-
-        const response = await fetch(
-            `${API_URL}/api/v1/doctors/me/schedule?startDate=${startOfWeek.toISOString()}&endDate=${endOfWeek.toISOString()}`,
-            { headers: { 'Authorization': `Bearer ${token}` } }
-        );
-        const data = await response.json();
-
-        if (!response.ok) {
-          throw new Error(data.message || 'Failed to fetch appointments.');
-        }
-
-        const allAppointments = data.data.schedule;
-        const todayString = today.toISOString().split('T')[0];
-
-        const todayList = allAppointments.filter(app => {
-          return new Date(app.date).toISOString().split('T')[0] === todayString && app.status !== 'available';
-        });
-
-        const upcomingList = allAppointments.filter(app => {
-          const appDateString = new Date(app.date).toISOString().split('T')[0];
-          return appDateString > todayString && app.status !== 'available';
-        });
-
-        setTodaysAppointments(todayList);
-        setUpcomingAppointments(upcomingList);
-      } catch (err) {
-        console.error("API Error:", err);
-        setError(err.message);
-      } finally {
-        setIsLoading(false);
+    // Mock appointments data
+    const mockTodayAppointments = [
+      {
+        _id: '1',
+        patient: { name: 'John Doe', age: 35, phone: '+91 9876543210' },
+        time: '10:00 AM',
+        status: 'waiting',
+        type: 'consultation',
+        symptoms: 'Fever and headache'
+      },
+      {
+        _id: '2',
+        patient: { name: 'Jane Smith', age: 28, phone: '+91 9876543211' },
+        time: '2:00 PM',
+        status: 'completed',
+        type: 'follow-up'
       }
-    };
-
-    if (token) {
-      fetchAppointments();
-    }
-  }, [token]);
+    ];
+    
+    const mockUpcomingAppointments = [
+      {
+        _id: '3',
+        patient: { name: 'Bob Wilson', age: 45, phone: '+91 9876543212' },
+        date: new Date(Date.now() + 86400000).toISOString(),
+        time: '11:00 AM',
+        status: 'confirmed',
+        type: 'checkup'
+      }
+    ];
+    
+    setTodaysAppointments(mockTodayAppointments);
+    setUpcomingAppointments(mockUpcomingAppointments);
+    setIsLoading(false);
+  }, []);
 
   const getStatusBadge = (status) => {
     switch (status) {
@@ -375,6 +367,14 @@ const DoctorDashboardPage = () => {
                   <span className="text-sm">Reports</span>
                 </Button>
 
+                <Button
+                    variant="outline"
+                    className="h-16 flex-col gap-2"
+                    onClick={() => navigate('/doctor/consultation')}
+                >
+                  <Video className="h-5 w-5" />
+                  <span className="text-sm">Consultation</span>
+                </Button>
                 <Button
                     variant="outline"
                     className="h-16 flex-col gap-2"

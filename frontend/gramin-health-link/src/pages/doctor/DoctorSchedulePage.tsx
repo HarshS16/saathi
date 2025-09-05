@@ -44,44 +44,32 @@ const DoctorSchedulePage = () => {
 
   // --- 1. Fetch the weekly schedule from the backend ---
   useEffect(() => {
-    const fetchSchedule = async () => {
-      setIsLoading(true);
-      setError(null);
-      try {
-        const { startOfWeek, endOfWeek } = getWeekRange(currentWeek);
-        const startDate = startOfWeek.toISOString().split('T')[0];
-        const endDate = endOfWeek.toISOString().split('T')[0];
-
-        const response = await fetch(`${API_URL}/api/v1/doctors/me/schedule?startDate=${startDate}&endDate=${endDate}`, {
-          headers: { 'Authorization': `Bearer ${token}` }
-        });
-        const data = await response.json();
-
-        if (!response.ok) {
-          throw new Error(data.message || 'Failed to fetch schedule.');
-        }
-
-        // Process fetched data to group by day
-        const groupedSchedule = {};
-        dayNames.forEach(day => groupedSchedule[day] = []);
-        data.data.schedule.forEach(slot => {
-          const dayName = new Date(slot.date).toLocaleDateString('en-US', { weekday: 'long' });
-          groupedSchedule[dayName].push(slot);
-        });
-
-        setSchedule(groupedSchedule);
-      } catch (err) {
-        console.error("API Error:", err);
-        setError(err.message);
-      } finally {
-        setIsLoading(false);
-      }
+    // Mock schedule data
+    const mockSchedule = {
+      'Monday': [
+        { time: '9:00 AM', status: 'confirmed', patient: { name: 'John Doe' } },
+        { time: '10:00 AM', status: 'available' },
+        { time: '11:00 AM', status: 'pending', patient: { name: 'Jane Smith' } }
+      ],
+      'Tuesday': [
+        { time: '9:00 AM', status: 'available' },
+        { time: '2:00 PM', status: 'confirmed', patient: { name: 'Bob Wilson' } }
+      ],
+      'Wednesday': [],
+      'Thursday': [
+        { time: '10:00 AM', status: 'available' },
+        { time: '3:00 PM', status: 'available' }
+      ],
+      'Friday': [
+        { time: '9:00 AM', status: 'confirmed', patient: { name: 'Alice Brown' } }
+      ],
+      'Saturday': [],
+      'Sunday': []
     };
-
-    if (token && user?.role === 'doctor') {
-      fetchSchedule();
-    }
-  }, [currentWeek, token, user]);
+    
+    setSchedule(mockSchedule);
+    setIsLoading(false);
+  }, [currentWeek]);
 
   const getStatusBadge = (status, patient) => {
     if (!patient) {
